@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    "outDir": "./lib",
+    "module": "commonjs",
+    "target": "es2017",
+    "lib": [
+      "dom",
+      "es2017"
+    ],
+    "declaration": true,
+    "removeComments": false,
+    "esModuleInterop": true,
+    "types": [
+      "node",
+      "jest"
+    ],
+    "sourceMap": true,
+    "baseUrl": ".",
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "noUnusedLocals": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "strict": true
+  },
+  "include": [
+    "src/**/*",
+    "typings.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "lib",
+    "dist",
+    "es",
+    "**/*.spec.ts",
+    "jest"
+  ]
+}

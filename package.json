@@ -1,0 +1,49 @@
+{
+  "name": "umi-plugin-apiman",
+  "version": "0.0.1",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "files": [
+    "lib/",
+    "es/"
+  ],
+  "scripts": {
+    "test-debug": "node --inspect-brk=9228 ./node_modules/jest/bin/jest --runInBand",
+    "test": "jest --runInBand",
+    "build": "npm run clear && tsc -p config/tsconfig.prod.json && tsc -p config/tsconfig.esm.prod.json",
+    "clear": "rimraf lib dist esm",
+    "prepublishOnly": "npm run build",
+    "pub": "npm publish --registry=https://registry.npmjs.org/ && git push"
+  },
+  "bin": {},
+  "dependencies": {
+    "ejs": "^3.1.5"
+  },
+  "devDependencies": {
+    "@ali-whale/eslint-config": "^0.8.26",
+    "@types/jest": "^24.0.12",
+    "@types/node": "^12.12.42",
+    "eslint": "^7.18.0",
+    "jest": "^24.9.0",
+    "rimraf": "^2.6.3",
+    "ts-jest": "^24.0.2",
+    "typescript": "^4.1.3",
+    "umi": "^3.3.5"
+  },
+  "peerDependencies": {
+    "umi": "^3"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "transformIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "transform": {
+      "^.+\\.ts?$": "ts-jest"
+    }
+  },
+  "author": "NicoKam",
+  "license": "MIT"
+}
