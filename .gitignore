@@ -5,3 +5,4 @@ esm/
 .vscode/
 temp/
 .idea/
+.umi

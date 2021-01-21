@@ -4,11 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "umi dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "umi": "^3.3.6"
+    "@umijs/preset-react": "^1.7.13",
+    "umi": "^3.2.28"
   }
 }

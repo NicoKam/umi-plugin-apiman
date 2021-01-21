@@ -11,4 +11,10 @@ export default (api: IApi) => {
   });
 
   
+  api.onGenerateFiles(() => {
+    api.writeTmpFile({
+      path: 'any.ts',
+      content: 'export default "asd";',
+    });
+  });
 };

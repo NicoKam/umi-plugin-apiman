@@ -1,0 +1,59 @@
+import fetch from 'isomorphic-fetch';
+import qs from 'qs';
+
+function toFormData(obj: Record<string, unknown>) {
+  const formData = new FormData();
+  Object.entries(obj).forEach(([key, value]) => {
+    if (value != null) {
+      formData.append(key, value instanceof Blob ? value : String(value));
+    }
+  });
+  return formData;
+}
+
+export type RequestType = 'json' | 'formData';
+
+/**
+ * 对 fetch 的简单封装
+ * @param apiPath API路径
+ * @param params 请求参数
+ * @param options 其它配置
+ */
+const wrappedFetch = async (
+  apiPath: string,
+  params: Record<string, unknown>,
+  options?: Omit<RequestInit, 'body'> & { requestType?: RequestType },
+) => {
+  let url = apiPath;
+  let method = (options?.method || 'GET').toUpperCase();
+  const { requestType = 'json', ...otherOptions } = options;
+  const finalOptions: RequestInit = otherOptions;
+
+  if (method === 'GET') {
+    // 拼装 get 请求的参数
+    const queryString = qs.stringify(params);
+    if (queryString) {
+      if (!url.endsWith('?')) {
+        url += '?';
+      }
+      url += queryString;
+    }
+  } else {
+    // 拼装 body
+    if (requestType === 'formData') {
+      // 拼装 formData 需要将 object 转换为 FormData
+      const formData = params instanceof FormData ? params : toFormData(params);
+      finalOptions.body = formData;
+    } else {
+      // 添加 content-type
+      finalOptions.headers = {
+        ...finalOptions.headers,
+        'content-type': 'application/json',
+      };
+      finalOptions.body = JSON.stringify(params);
+    }
+  }
+
+  const response = await fetch(url, options);
+  return response;
+};
