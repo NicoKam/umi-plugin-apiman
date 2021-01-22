@@ -1,26 +1,6 @@
 import fs from 'fs';
 import Joi from '@hapi/joi';
-import joi2Types from 'joi2types';
-
-// example for react-router-config
-const schema = Joi.array().items(
-  Joi.object({
-    path: Joi.string().description('Any valid URL path'),
-    component: Joi.string().description('A React component to render only when the location matches.'),
-    redirect: Joi.string().description('navigate to a new location'),
-    exact: Joi.boolean().description(
-      'When true, the active class/style will only be applied if the location is matched exactly.',
-    ),
-  }).unknown(),
-);
-
-(async () => {
-  const types = await joi2Types(schema, {
-    bannerComment: '/** comment for test */',
-    interfaceName: 'IRoute',
-  });
-  console.log('types', types);
-})();
+// import joi2Types from 'joi2types';
 
 const { readFile } = fs.promises;
 
@@ -34,24 +14,53 @@ export const readFileJson = async (path: string) => {
   }
 };
 
-const RequestParamSchema = Joi.object({
-  type: Joi.string().pattern(/(string|number|boolean)/),
+const BaseParamSchema = Joi.alternatives()
+  .try(
+    Joi.object({
+      type: Joi.string().pattern(/(string|number|boolean)/),
+      description: Joi.string(),
+      required: Joi.boolean(),
+    }),
+    Joi.object({
+      type: Joi.string().pattern(/(object|array)/),
+      description: Joi.string(),
+      required: Joi.boolean(),
+      properties: Joi.object()
+        .pattern(/[a-zA-Z0-9/_-]+/, Joi.link('#param'))
+        .required(),
+    }),
+  )
+  .id('param');
+
+const validateResult = BaseParamSchema.validate({
+  type: 'object',
+  properties: {
+    total: {
+      type: 'string',
+      description: '数据总量',
+    },
+    list: {
+      type: 'array',
+      description: '用户列表',
+    },
+  },
 });
 
 /* api-json 的标准格式 */
-const apiJsonSchema = Joi.object({
-  // 继承配置 支持 string/string[]
-  extends: [Joi.string(), Joi.array().items(Joi.string())],
-  // api 配置
-  api: Joi.object().pattern(
-    /(GET|POST|PUT|DELETE|OPTIONS|TRACE|PATCH)\|[a-zA-Z0-9/_-]+/,
-    Joi.object({
-      // 接口描述
-      description: Joi.string(),
-      // 额外的 headers
-      headers: Joi.object(),
-      params: Joi.object(),
-    }),
-  ),
-  config: Joi.object(),
-});
+// const apiJsonSchema = Joi.object({
+//   // 继承配置 支持 string/string[]
+//   extends: [Joi.string(), Joi.array().items(Joi.string())],
+//   // api 配置
+//   api: Joi.object().pattern(
+//     /(GET|POST|PUT|DELETE|OPTIONS|TRACE|PATCH)\|[a-zA-Z0-9/_-]+/,
+//     Joi.object({
+//       // 接口描述
+//       description: Joi.string(),
+//       // 额外的 headers
+//       headers: Joi.object(),
+//       params: Joi.object(),
+//     }),
+//   ),
+//   config: Joi.object(),
+// });
+console.log(JSON.stringify(validateResult, null, 2));
