@@ -1,0 +1,70 @@
+{
+  "api": {
+    "GET|/user": {
+      "description": "获取用户列表",
+      "headers": {},
+      "params": {
+        "userName": {
+          "type": "string",
+          "required": false
+        }
+      },
+      "responseType": "json",
+      "response": {
+        "type": "object",
+        "structure": {
+          "total": {
+            "type": "number",
+            "description": "数据总量"
+          },
+          "list": {
+            "type": "array",
+            "description": "用户列表",
+            "structure": {
+              "userId": {
+                "type": "string",
+                "description": "用户ID"
+              },
+              "userName": {
+                "type": "string",
+                "description": "用户名"
+              },
+              "age": {
+                "type": "number",
+                "description": "年龄"
+              }
+            }
+          }
+        }
+      }
+    },
+    "GET|/user/{userId}": {
+      "description": "获取用户详情",
+      "headers": {},
+      "params": {
+        "userId": {
+          "type": "string",
+          "required": true
+        }
+      },
+      "response": {
+        "type": "object",
+        "structure": {
+          "userId": {
+            "type": "string",
+            "description": "用户ID"
+          },
+          "userName": {
+            "type": "string",
+            "description": "用户名"
+          },
+          "age": {
+            "type": "number",
+            "description": "年龄"
+          }
+        }
+      }
+    }
+  },
+  "config": {}
+}
