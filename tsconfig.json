@@ -26,6 +26,7 @@
     "allowJs": true,
     "skipLibCheck": true,
     "experimentalDecorators": true,
+    "resolveJsonModule": true,
     "strict": true,
   },
   "include": [
