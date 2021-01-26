@@ -1,0 +1,13 @@
+/* <%=serviceName %> start */
+
+export type <%=pascalServiceName %>Param = {};
+
+export type <%=pascalServiceName %>ResponseType = {};
+
+/**
+* <%=description %>
+*/
+export const <%=serviceName %> = <<%=pascalServiceName %>ResponseType>(params: <%=pascalServiceName %>Param) =>
+  fetch<<%=pascalServiceName %>ResponseType>('<%=apiPath %>', params, <%=options %>);
+
+/* <%=serviceName %> end */

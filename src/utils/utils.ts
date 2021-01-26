@@ -1,6 +1,5 @@
 import fs from 'fs';
 import Joi from '@hapi/joi';
-import api from '../api.json';
 // import joi2Types from 'joi2types';
 
 const { readFile } = fs.promises;
@@ -15,18 +14,23 @@ export const readFileJson = async (path: string) => {
   }
 };
 
-const variableRegExp = /[a-zA-Z0-9/_-]+/;
+export const readFileStr = async (path: string) => {
+  const file = await readFile(path);
+  return file.toString();
+};
+
+const variableRegExp = /^[a-zA-Z0-9/_-]+$/;
 
 /* 基础的参数类型 */
 const BaseParamSchema = Joi.alternatives()
   .try(
     Joi.object({
-      type: Joi.string().pattern(/(string|number|boolean)/),
+      type: Joi.string().pattern(/^(string|number|boolean)$/),
       description: Joi.string(),
       required: Joi.boolean(),
     }),
     Joi.object({
-      type: Joi.string().pattern(/(object|array)/),
+      type: Joi.string().pattern(/^(object|array)$/),
       description: Joi.string(),
       required: Joi.boolean(),
       properties: Joi.object().pattern(variableRegExp, Joi.link('#param')).required(),
@@ -41,7 +45,7 @@ const apiJsonSchema = Joi.object({
   // api 配置
   api: Joi.object().pattern(
     // 接口 method | path
-    /(GET|POST|PUT|DELETE|OPTIONS|TRACE|PATCH)\|[a-zA-Z0-9/_-]+/,
+    /^(GET|POST|PUT|DELETE|OPTIONS|TRACE|PATCH)\|[a-zA-Z0-9/_-{}]+$/,
     Joi.object({
       // 自定义接口名
       serviceName: Joi.string().pattern(variableRegExp),
@@ -51,25 +55,25 @@ const apiJsonSchema = Joi.object({
       headers: Joi.object(),
       // 参数格式
       params: Joi.object().pattern(variableRegExp, BaseParamSchema),
+      // 响应类型
+      requestType: Joi.string().pattern(/^(json|formData)$/),
+      // 响应类型
+      responseType: Joi.string().pattern(/^(json|formData|text|blob|arrayBuffer)$/),
       // 响应格式
       response: BaseParamSchema,
-    }),
+      // 异常处理方式
+      errorHandler: Joi.string().pattern(/^(throw|ignore)$/),
+    }).pattern(/^/, Joi.any()),
   ),
   config: Joi.object(),
 });
 
-const validateResult = apiJsonSchema.validate(api);
-// const validateResult = BaseParamSchema.validate({
-//   type: 'object',
-//   properties: {
-//     total: {
-//       type: 'string',
-//       description: '数据总量',
-//     },
-//     list: {
-//       type: 'array',
-//       description: '用户列表',
-//     },
-//   },
-// });
-console.log(JSON.stringify(validateResult, null, 2));
+export async function readApiJson(apiJsonPath: string) {
+  const json = await readFileJson(apiJsonPath);
+  if (json.error) {
+    console.error(`配置文件【${apiJsonPath}】解析失败`);
+    throw json.error;
+  }
+  const validateResult = apiJsonSchema.validate(json);
+  return validateResult;
+}

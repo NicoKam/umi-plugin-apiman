@@ -18,7 +18,9 @@
   },
   "bin": {},
   "dependencies": {
+    "@types/change-case": "^2.3.1",
     "@types/isomorphic-fetch": "0.0.35",
+    "change-case": "^4.1.2",
     "ejs": "^3.1.5",
     "isomorphic-fetch": "^3.0.0"
   },

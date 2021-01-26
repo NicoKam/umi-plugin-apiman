@@ -1,0 +1,10 @@
+import fetch from '../fetch/fetch';
+
+export interface JsonResponseWrapper<T> {
+  success: boolean;
+  errCode: string | number;
+  errMsg: string | number;
+  data: T;
+}
+
+<%=content %>

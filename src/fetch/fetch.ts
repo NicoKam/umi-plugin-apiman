@@ -103,7 +103,7 @@ export class ResponseError extends Error {
  * @param params 请求参数
  * @param options 其它配置
  */
-const wrappedFetch = async (
+const wrappedFetch = async <ResponseType>(
   url: string,
   params: Record<string, unknown> = {},
   options: Omit<RequestInit & ApiManOptions, 'body'> = {},
