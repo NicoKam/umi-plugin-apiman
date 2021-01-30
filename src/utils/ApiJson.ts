@@ -1,19 +1,21 @@
 export interface BaseParamSchema {
   type: 'string' | 'number' | 'boolean';
+  array?: boolean;
   description?: string;
   required?: boolean;
 }
 
 export interface ObjectParamSchema {
-  type: 'object' | 'array';
+  type: 'object';
+  array?: boolean;
   description?: string;
   required?: boolean;
-  properties: {
-    [key: string]: ParamSchema;
-  };
+  properties: Record<string, ParamSchema>;
 }
 
 export type ParamSchema = BaseParamSchema | ObjectParamSchema;
+
+export type ResponseType = 'json' | 'formData' | 'text' | 'blob' | 'arrayBuffer';
 
 export interface ApiJson {
 
@@ -40,7 +42,7 @@ export interface ApiJson {
       requestType?: 'json' | 'formData';
 
       /** 响应类型 */
-      responseType?: 'json' | 'formData' | 'text' | 'blob' | 'arrayBuffer';
+      responseType?: ResponseType;
 
       /** 响应格式 */
       response?: ParamSchema;

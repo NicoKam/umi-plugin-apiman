@@ -1,0 +1,61 @@
+{
+  "name": "web",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "umi dev",
+    "build": "umi build",
+    "pack": "node scripts/pack.js",
+    "eslint": "eslint --fix --ext .js --ext .jsx --ext .ts --ext .tsx ./src",
+    "lint-staged": "lint-staged",
+    "test": "umi-test",
+    "test:coverage": "umi-test --coverage"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "prettier --write",
+      "eslint --fix --quiet"
+    ],
+    "*.ts?(x)": [
+      "prettier --parser=typescript --write",
+      "eslint --fix --quiet"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "dependencies": {
+    "@ant-design/icons": "^4.2.2",
+    "@umijs/preset-react": "^1.7.9",
+    "@umijs/test": "^3.2.28",
+    "ahooks": "^2.4.0",
+    "antd": "^4.5.4",
+    "classnames": "^2.2.6",
+    "lodash-es": "^4.17.15",
+    "prefix-classnames": "^0.0.3",
+    "qs": "^6.9.4",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-helmet": "^5.2.0",
+    "react-perfect-scrollbar": "^1.5.8",
+    "react-router-dom": "^5.2.0",
+    "umi": "^3.2.28",
+    "umi-request": "^1.3.3"
+  },
+  "devDependencies": {
+    "@ali-whale/eslint-config": "^1.0.5",
+    "@types/react": "^16.14.2",
+    "eslint": "^7.18.0",
+    "husky": "^4.3.8",
+    "lint-staged": "^10.5.0",
+    "tar": "^6.0.5",
+    "typescript": "^4.1.3",
+    "umi-plugin-convention-routes": "^0.2.1"
+  },
+  "cbdTemplateInfo": {
+    "templateName": "web-umi3",
+    "hash": "77161d13580333d08f3caa33b54248255a12cb210856d680c089d94ea6ee8954",
+    "lastUpdateTime": "2021-01-30T04:36:18.268Z"
+  }
+}

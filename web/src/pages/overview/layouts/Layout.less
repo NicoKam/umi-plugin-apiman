@@ -1,0 +1,38 @@
+.root {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+}
+
+.menuBar {
+  height: 100%;
+  width: 50px;
+  background-color: #cccccc;
+  color: #777777;
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  .menuBarItem {
+    height: 50px;
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+}
+
+.menu {
+  height: 100%;
+  width: 400px;
+  background-color: #eeeeee;
+  .menuTitle {
+    background-color: #dddddd;
+    padding: 6px 10px;
+  }
+}
+
+.content {
+  flex: 1;
+}

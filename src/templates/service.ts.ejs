@@ -1,13 +1,19 @@
 /* <%=serviceName %> start */
 
-export type <%=pascalServiceName %>Param = {};
-
-export type <%=pascalServiceName %>ResponseType = {};
+/**
+ * <%=description %> - 参数结构
+ */
+export type <%=pascalServiceName %>Param = <%=params%>;
 
 /**
-* <%=description %>
-*/
-export const <%=serviceName %> = <<%=pascalServiceName %>ResponseType>(params: <%=pascalServiceName %>Param) =>
-  fetch<<%=pascalServiceName %>ResponseType>('<%=apiPath %>', params, <%=options %>);
+ * <%=description %> - 响应结构
+ */
+export type <%=pascalServiceName %>ResponseData = <%=responseType %>;
+
+/**
+ * <%=description %>
+ */
+export const <%=serviceName %> = (params: <%=pascalServiceName %>Param) =>
+  fetch<<%=isJson ? 'JsonResponseWrapper<' : '' %><%=pascalServiceName %>ResponseData<%=isJson ? '>' : '' %>>('<%=apiPath %>', params, <%=options %>);
 
 /* <%=serviceName %> end */

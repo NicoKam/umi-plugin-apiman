@@ -103,11 +103,11 @@ export class ResponseError extends Error {
  * @param params 请求参数
  * @param options 其它配置
  */
-const wrappedFetch = async <ResponseType>(
+const wrappedFetch = async <ResponseType extends unknown>(
   url: string,
   params: Record<string, unknown> = {},
   options: Omit<RequestInit & ApiManOptions, 'body'> = {},
-) => {
+): Promise<ResponseType> => {
   const method = (options?.method || 'GET').toUpperCase();
   const { requestType = 'json', responseType = 'json', errorHandler = 'throw', ...otherOptions } = options;
 
@@ -185,9 +185,11 @@ const wrappedFetch = async <ResponseType>(
       // 忽略异常
       return {
         success: false,
-        status: response.status,
-        errorText: response.statusText,
-        requestInfo: finalRequestInfo,
+        errorInfo: {
+          status: response.status,
+          errorText: response.statusText,
+          requestInfo: finalRequestInfo,
+        },
       };
     }
     // 抛出异常
@@ -201,43 +203,43 @@ const wrappedFetch = async <ResponseType>(
 
   // 请求正确，根据 responseType 获得结果，并处理拦截器
   if (responseType === 'arrayBuffer') {
-    return response.arrayBuffer().then((result) => {
+    return response.arrayBuffer().then(result =>
       execResponseInterceptor<ArrayBuffer, typeof interceptor.arrayBuffer>(interceptor.arrayBuffer)({
         ...finalRequestInfo,
         result,
-      });
-    });
+      }),
+    );
   }
   if (responseType === 'blob') {
-    return response.blob().then((result) => {
+    return response.blob().then(result =>
       execResponseInterceptor<Blob, typeof interceptor.blob>(interceptor.blob)({
         ...finalRequestInfo,
         result,
-      });
-    });
+      }),
+    );
   }
   if (responseType === 'formData') {
-    return response.formData().then((result) => {
+    return response.formData().then(result =>
       execResponseInterceptor<FormData, typeof interceptor.formData>(interceptor.formData)({
         ...finalRequestInfo,
         result,
-      });
-    });
+      }),
+    );
   }
   if (responseType === 'text') {
-    return response.text().then((result) => {
+    return response.text().then(result =>
       execResponseInterceptor<string, typeof interceptor.text>(interceptor.text)({
         ...finalRequestInfo,
         result,
-      });
-    });
+      }),
+    );
   }
-  return response.json().then((result) => {
+  return response.json().then(result =>
     execResponseInterceptor<Record<string, any>, typeof interceptor.json>(interceptor.json)({
       ...finalRequestInfo,
       result,
-    });
-  });
+    }),
+  );
 };
 
 export default wrappedFetch;

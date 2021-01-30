@@ -7,7 +7,29 @@
       "params": {
         "userName": {
           "type": "string",
+          "description": "用户名\n支持中文/英文字母/数字",
           "required": false
+        },
+        "userId": {
+          "type": "string",
+          "description": "用户id",
+          "required": true
+        },
+        "userList": {
+          "type": "object",
+          "array": true,
+          "description": "用户id列表",
+          "properties": {
+            "id": {
+              "description": "用户id",
+              "type": "string"
+            },
+            "userName": {
+              "type": "string",
+              "description": "用户名\n支持中文/英文字母/数字",
+              "required": false
+            }
+          }
         }
       },
       "responseType": "json",
@@ -19,7 +41,8 @@
             "description": "数据总量"
           },
           "list": {
-            "type": "array",
+            "type": "object",
+            "array":true,
             "description": "用户列表",
             "properties": {
               "userId": {

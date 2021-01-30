@@ -1,0 +1,84 @@
+@prefix: side-menu;
+
+.@{prefix} {
+
+  &.ant-menu-dark {
+    background-color: #262931;
+  }
+
+  &.ant-menu-dark .ant-menu-sub {
+    background-color: #1A1F23;
+
+    .ant-menu-item {
+      &:not(.ant-menu-item-selected):hover {
+        background-color: #101418;
+      }
+    }
+  }
+
+  &-popup {
+    &.ant-menu-dark .ant-menu-sub {
+      background-color: #1A1F23;
+    }
+
+    .ant-menu-item {
+      font-size: 12px;
+
+      &:not(.ant-menu-item-selected):hover {
+        background-color: #101418;
+      }
+    }
+  }
+
+
+  .ant-menu-item,
+  .ant-menu-submenu-title {
+    font-size: 12px;
+
+    &:hover {
+      background-color: #1A1F23;
+    }
+  }
+
+  &.ant-menu-dark {
+    .ant-menu-submenu-title:hover,
+    > .ant-menu-item:not(.ant-menu-item-selected):hover {
+      color: #0091FF;
+
+      .anticon {
+        color: #FFFFFF;
+      }
+    }
+
+  }
+
+
+  .ant-menu-item:not(:last-child),
+  .ant-menu-item {
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+
+  &.ant-menu-dark .ant-menu-item-selected, .ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected {
+    background-color: @color-primary;
+  }
+
+  &.ant-menu-inline-collapsed > .ant-menu-item,
+  &.ant-menu-inline-collapsed > .ant-menu-item-group > .ant-menu-item-group-list > .ant-menu-item,
+  &.ant-menu-inline-collapsed > .ant-menu-item-group > .ant-menu-item-group-list > .ant-menu-submenu > .ant-menu-submenu-title,
+  &.ant-menu-inline-collapsed > .ant-menu-submenu > .ant-menu-submenu-title {
+    padding: 0 17px;
+  }
+  &.ant-menu-inline-collapsed > .ant-menu-item .anticon,
+  &.ant-menu-inline-collapsed > .ant-menu-item-group > .ant-menu-item-group-list > .ant-menu-item .anticon,
+  &.ant-menu-inline-collapsed > .ant-menu-item-group > .ant-menu-item-group-list > .ant-menu-submenu > .ant-menu-submenu-title .anticon,
+  &.ant-menu-inline-collapsed > .ant-menu-submenu > .ant-menu-submenu-title .anticon {
+    font-size: 1.6rem;
+  }
+
+  &- {
+    &root {
+      font-size: 12px;
+    }
+  }
+}
