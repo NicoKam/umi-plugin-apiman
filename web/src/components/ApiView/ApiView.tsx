@@ -30,7 +30,7 @@ const ApiView = (props: ApiViewProps) => {
         <div className={styles.description}>{description}</div>
       </div>
       <div className={styles.request}>
-
+        
       </div>
       <div className={styles.response}>
 

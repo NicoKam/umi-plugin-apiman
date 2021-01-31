@@ -31,7 +31,7 @@ export type ApiProps = {
   /** 参数格式 */
   params?: Record<string, ParamSchema>;
 
-  /** 响应类型 */
+  /** 请求类型 */
   requestType?: 'json' | 'formData';
 
   /** 响应类型 */
