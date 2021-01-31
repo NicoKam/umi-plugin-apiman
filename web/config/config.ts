@@ -7,6 +7,17 @@ export default defineConfig({
     antd: true,
   },
   theme,
+  chainWebpack(memo) {
+    memo.module
+      .rule('less')
+      .oneOf('css-modules')
+      .use('css-loader')
+      .options({
+        modules: {
+          localIdentName: '[name]__[local]__[hash:base64:5]',
+        },
+      });
+  },
   proxy: {
     '/api': {
       target: 'http://server-ip:8080/',
