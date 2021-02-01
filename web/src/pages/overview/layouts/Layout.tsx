@@ -2,14 +2,25 @@ import type { ApiMenuListProps } from '@/components/ApiMenuList';
 import ApiMenuList from '@/components/ApiMenuList';
 import ReactButton from '@/components/ReactButton';
 import { getApiJson } from '@/services/public';
+import { useStoreDispatcher, useStoreState } from '@/store';
 import { SettingOutlined, UnorderedListOutlined } from '@ant-design/icons';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useRequest } from 'umi';
 import styles from './Layout.less';
 
 const Layout = (props) => {
   const { children } = props;
   const { data } = useRequest(getApiJson);
+
+  const [, setApi] = useStoreState('api');
+
+  useEffect(() => {
+    if (data) {
+      setApi({
+        api: data,
+      });
+    }
+  }, [data]);
 
   const menuList = useMemo<ApiMenuListProps['data']>(() => {
     if (data) {
@@ -18,12 +29,13 @@ const Layout = (props) => {
         const [method, apiPath] = apiKey.split('|');
         return {
           api: apiPath,
-          method,
+          method: method as MethodType,
         };
       });
     }
     return [];
   }, [data]);
+
   return (
     <div className={`${styles.root}`}>
       <div className={styles.menuBar}>

@@ -1,4 +1,5 @@
 import HeadersTable from '@/components/HeadersTable';
+import { useStoreState } from '@/store';
 import React, { useState } from 'react';
 import styles from './OverviewPage.less';
 
@@ -9,9 +10,12 @@ const dataSource = [
 
 const OverviewPage = () => {
   const [data, setData] = useState(dataSource);
+  const [{ api }] = useStoreState('api');
+
   return (
     <div className={`${styles.root}`}>
       <HeadersTable dataSource={data} onDataSourceChange={setData} />
+      <pre>{JSON.stringify(api, null, 2)}</pre>
     </div>
   );
 };
