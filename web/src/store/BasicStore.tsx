@@ -1,5 +1,5 @@
 import { usePersistFn } from 'ahooks';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 
 type DispatchFn<T extends Record<string, HooksType> = Record<string, never>> = (
   type: keyof T,
@@ -12,7 +12,7 @@ type EffectFn = (...args: any[]) => Promise<unknown>;
 type HooksEffectsType = (
   dispatch: DispatchFn,
   getState: () => Record<string, unknown>,
-  effects: () => Record<string, EffectFn>,
+  getEffects: () => Record<string, EffectFn>,
 ) => Record<string, EffectFn>;
 
 type HooksType = {
@@ -71,23 +71,27 @@ function pickEffects<T extends Record<string, HooksType>, R = { [P in keyof T]: 
   });
   return res;
 }
-// function pickEffectsObj<
-//   Arg extends Parameters<HooksEffectsType>,
-//   T extends Record<string, HooksType>,
-//   R = { [P in keyof T]: ReturnType<T[P]['effects']> },
-// >(obj: T, args: Arg): R {
-//   const res = {} as R;
-//   Object.entries(obj).forEach(([key, value]) => {
-//     res[key] = value.effects(...args);
-//   });
-//   return res;
-// }
+function pickEffectsObj<
+  Arg extends Parameters<HooksEffectsType>,
+  T extends Record<string, HooksType>,
+  R = { [P in keyof T]: ReturnType<T[P]['effects']> }
+>(obj: T, args: Arg): R {
+  const res = {} as R;
+  Object.entries(obj).forEach(([key, value]) => {
+    res[key] = value.effects(...args);
+  });
+  return res;
+}
 
 export default function createStore<T extends Record<string, HooksType>>(hooks: T) {
   const stateOfHooks = pickStates(hooks);
-  // const effectsOfHooks = pickEffects(hooks);
+  const effectsOfHooks = pickEffects(hooks);
+  const effects = pickEffectsObj(hooks);
 
-  const StoreContext = React.createContext(stateOfHooks);
+  const StoreContext = React.createContext({
+    stores: stateOfHooks,
+    effects,
+  });
 
   const StoreProvider = (props: StoreProviderProps) => {
     const { children } = props;
@@ -118,11 +122,27 @@ export default function createStore<T extends Record<string, HooksType>>(hooks: 
     });
 
     const [effectsHandler] = useState(() => {
-      const effectsHandler = pickEffects(hooks);
-      
-      return effectsHandler;
+      const effects = pickEffectsObj(hooks, [dispatch, getState, () => effects]);
+      return effects;
     });
 
-    return <StoreContext.Provider value={state}>{children}</StoreContext.Provider>;
+    return (
+      <StoreContext.Provider value={{ stores: state, effects: effectsHandler }}>
+        {children}
+      </StoreContext.Provider>
+    );
+  };
+
+  return {
+    context: StoreContext,
+    StoreProvider,
+    states: stateOfHooks,
+    effects: effectsOfHooks,
   };
 }
+
+const res = createStore({ hooka, hookb });
+
+const A = () => {
+  const context = useContext(res.context);
+};
