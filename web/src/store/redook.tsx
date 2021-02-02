@@ -1,14 +1,14 @@
 import { usePersistFn } from 'ahooks';
 import React, { useContext, useState } from 'react';
 
-export type UpdateFn<T extends Record<string, Model>> = (
+export type UpdateFn<U extends Record<string, Model>> = <T extends Record<string, Model> = U>(
   namespace: keyof T,
   obj: Partial<T[keyof T]['state']>,
 ) => void;
 
 export type ClearFn<T extends Record<string, Model>> = (namespace: keyof T) => void;
 
-export type ModelEffectsArgs<T extends Record<string, Model> = Record<string, never>> = {
+export type ModelEffectsArgs<T extends Record<string, Model>> = {
   update: UpdateFn<T>;
   clear: ClearFn<T>;
   getState: () => Record<string, unknown>;
@@ -17,14 +17,19 @@ export type ModelEffectsArgs<T extends Record<string, Model> = Record<string, ne
 
 export type EffectFn = (...args: any[]) => Promise<unknown>;
 
-export type ModelEffectsType = (args: ModelEffectsArgs) => Record<string, EffectFn>;
+export type ModelEffectsType<T extends Record<string, Model>> = (
+  args: ModelEffectsArgs<T>,
+) => Record<string, EffectFn>;
 
-export type Model = {
+export type Model<T extends Record<string, Model> = Record<string, never>> = {
   state: Record<string, unknown>;
-  effects: ModelEffectsType;
+  effects: ModelEffectsType<T>;
 };
 
-export function defineModel<T extends Model>(model: T): T {
+export function defineModel<
+  T extends Record<string, Model> = Record<string, never>,
+  M extends Model<T> = Model<T>,
+>(model: M): M {
   return model;
 }
 

@@ -1,9 +1,9 @@
 import createStore from './redook';
-import api from './api';
 
-const store = createStore({
-  api,
-});
+const models = {};
+const store = createStore(models);
+
+export type Models = typeof models;
 
 export default store;
 

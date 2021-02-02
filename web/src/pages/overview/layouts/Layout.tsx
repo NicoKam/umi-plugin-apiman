@@ -1,8 +1,9 @@
 import type { ApiMenuListProps } from '@/components/ApiMenuList';
 import ApiMenuList from '@/components/ApiMenuList';
 import ReactButton from '@/components/ReactButton';
+import type { MethodType } from '@/def';
 import { getApiJson } from '@/services/public';
-import { useStoreDispatcher, useStoreState } from '@/store';
+import { useStoreState } from '@/store';
 import { SettingOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import React, { useEffect, useMemo } from 'react';
 import { useRequest } from 'umi';
