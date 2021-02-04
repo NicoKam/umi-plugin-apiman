@@ -1,48 +1,41 @@
 /* eslint-disable no-param-reassign */
 import { usePersistFn } from 'ahooks';
 import React, { useContext, useState } from 'react';
-import type { Stores } from '.';
+
+type AbstractStores = Record<string, BaseModel>;
 
 interface BaseModelInterface {
   state?: Record<string | number, unknown>;
 }
 
-export class BaseModel implements BaseModelInterface {
+export class BaseModel<S extends AbstractStores = AbstractStores> implements BaseModelInterface {
   state = {};
-  getState: <T extends keyof Stores>(namespace: T) => Stores[T]['state'] = namespace =>
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    stores[namespace].state;
-
-  getEffects: <T extends keyof Stores>(namespace: T) => Omit<Stores[T], 'state' | 'getState'> = (
-    namespace,
-  ) => {
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    const { state, getState, ...effects } = stores[namespace];
-    return effects;
+  getState: <T extends keyof S>(namespace: T) => S[T]['state'] = () => {
+    throw new Error('Redook Provider has not been rendered yet.');
   };
 
-  update: <T extends keyof Stores>(namespace: T, store: Partial<Stores[T]['state']>) => void = () => {};
+  getEffects: <T extends keyof S>(namespace: T) => Omit<S[T], 'state' | 'getState'> = () => {
+    throw new Error('Redook Provider has not been rendered yet.');
+  };
 
-  clear: <T extends keyof Stores>(namespace: T) => void = () => {};
+  update: <T extends keyof S>(namespace: T, store: Partial<S[T]['state']>) => void = () => {};
+
+  clear: <T extends keyof S>(namespace: T) => void = () => {};
 }
 
+export default function createStore<S extends AbstractStores>(models: S) {
+  type UpdateFn = <T extends keyof S>(namespace: T, obj: Partial<S[T]['state']>) => void;
 
-export type UpdateFn = <T extends keyof Stores>(
-  namespace: T,
-  obj: Partial<Stores[T]['state']>,
-) => void;
+  type ClearFn = (namespace: keyof S) => void;
 
-export type ClearFn = (namespace: keyof Stores) => void;
+  function getStateFromStores<T extends keyof S>(models: S): Record<T, S[T]['state']> {
+    const res = {} as Record<T, S[T]['state']>;
+    Object.entries(models).forEach(([key, value]) => {
+      res[key] = value.state;
+    });
+    return res;
+  }
 
-function getStateFromStores<T extends keyof Stores>(models: Stores): Record<T, Stores[T]['state']> {
-  const res = {} as Record<T, Stores[T]['state']>;
-  Object.entries(models).forEach(([key, value]) => {
-    res[key] = value.state;
-  });
-  return res;
-}
-
-export default function createStore(models: Stores) {
   const initialState = getStateFromStores(models);
   const StoreContext = React.createContext({
     stores: initialState,
@@ -60,7 +53,6 @@ export default function createStore(models: Stores) {
 
     const getState = usePersistFn(() => state);
 
-
     const update = usePersistFn<UpdateFn>((type, obj) => {
       if (type in state) {
         setState({
@@ -72,7 +64,7 @@ export default function createStore(models: Stores) {
         });
       }
     });
-    const clear = usePersistFn((type: keyof Stores) => {
+    const clear = usePersistFn((type: keyof S) => {
       if (type in state) {
         setState({
           ...state,
@@ -85,7 +77,7 @@ export default function createStore(models: Stores) {
 
     if (!init) {
       Object.entries(models).forEach(([key, model]) => {
-        model.getState = <T extends keyof Stores>(namespace: T) => getState()[namespace];
+        model.getState = <T extends keyof S>(namespace: T) => getState()[namespace];
         model.clear = clear;
         model.update = update;
       });
@@ -99,17 +91,17 @@ export default function createStore(models: Stores) {
     );
   };
 
-  const useStoreState = <P extends keyof Stores>(
+  const useStoreState = <P extends keyof S>(
     namespace: P,
-  ): [Stores[P]['state'], (state: Partial<Stores[P]['state']>) => void] => {
+  ): [S[P]['state'], (state: Partial<S[P]['state']>) => void] => {
     const { stores, update } = useContext(StoreContext);
-    const setState = usePersistFn((newState: Partial<Stores[P]['state']>) => {
+    const setState = usePersistFn((newState: Partial<S[P]['state']>) => {
       update(namespace, newState);
     });
     return [stores[namespace], setState];
   };
 
-  const useStoreEffects = <P extends keyof Stores>(namespace: P) => {
+  const useStoreEffects = <P extends keyof S>(namespace: P) => {
     const { models } = useContext(StoreContext);
     const { getState, getEffects, ...effects } = models[namespace];
     return effects;

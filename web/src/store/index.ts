@@ -1,4 +1,6 @@
-import { Model1, Model2, Api } from './api';
+import Api from './api';
+import Model1 from './model1';
+import Model2 from './model2';
 import createStore from './redook';
 
 export type Stores = {
@@ -14,9 +16,5 @@ const models: Stores = {
 };
 
 const store = createStore(models);
-
-export type Models = typeof models;
-
-export default store;
 
 export const { StoreProvider, context, useStoreState, useStoreDispatcher, useStoreEffects } = store;

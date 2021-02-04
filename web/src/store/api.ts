@@ -1,27 +1,14 @@
+import type { Stores } from '.';
 import type { ApiJson } from '../def.d';
 import { BaseModel } from './redook';
 
-export class Model1 extends BaseModel {
-  state = {
-    value1: '123',
-    value2: '234',
-  };
-}
-
-export class Model2 extends BaseModel {
-  state = {
-    value3: '123',
-    value4: '234',
-  };
-
-  fn = async () => {
-    const { value1 } = this.getState('model1');
-    console.warn(value1);
-  };
-}
-
-export class Api extends BaseModel {
+export default class Api extends BaseModel<Stores> {
   state = {
     api: {} as ApiJson,
+  };
+
+  apiEffect = async () => {
+    const effects = this.getEffects('model2');
+    await effects.testEffect('test');
   };
 }

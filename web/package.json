@@ -26,6 +26,7 @@
     }
   },
   "dependencies": {
+    "@ali-whale/mobile": "^0.8.42",
     "@ali-whale/utils": "^0.8.42",
     "@ant-design/icons": "^4.2.2",
     "@umijs/preset-react": "^1.7.9",
