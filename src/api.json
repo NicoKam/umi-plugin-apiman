@@ -42,7 +42,7 @@
           },
           "list": {
             "type": "object",
-            "array":true,
+            "array": true,
             "description": "用户列表",
             "properties": {
               "userId": {
@@ -60,6 +60,69 @@
             }
           }
         }
+      }
+    },
+    "POST|/user": {
+      "serviceName": "updateUser",
+      "description": "更新用户信息",
+      "params": {
+        "userId": {
+          "type": "string",
+          "description": "用户ID",
+          "required": true
+        },
+        "userName": {
+          "type": "string",
+          "description": "用户名\n支持中文/英文字母/数字",
+          "required": true
+        },
+        "age": {
+          "type": "number",
+          "description": "年龄",
+          "required": false
+        }
+      },
+      "responseType": "json",
+      "response": {
+        "type": "string",
+        "description": "success | error"
+      }
+    },
+    "PUT|/user": {
+      "serviceName": "addUser",
+      "description": "添加用户信息",
+      "params": {
+        "userName": {
+          "type": "string",
+          "description": "用户名\n支持中文/英文字母/数字",
+          "required": true
+        },
+        "age": {
+          "type": "number",
+          "description": "年龄",
+          "required": false
+        }
+      },
+      "responseType": "json",
+      "response": {
+        "type": "string",
+        "description": "success | error"
+      }
+    },
+    "DELETE|/user": {
+      "serviceName": "deleteUser",
+      "description": "通过ID删除用户信息",
+      "params": {
+        "userId": {
+          "type": "string",
+          "description": "用户ID",
+          "required": true
+        }
+      },
+      "responseType": "json",
+      "response": {
+        "type": "string",
+        "description": "success | error"
       }
     },
     "GET|/user/{userId}": {

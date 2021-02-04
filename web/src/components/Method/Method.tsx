@@ -22,7 +22,7 @@ const Method = (props: MethodProps) => {
       })}`}
       {...otherProps}
     >
-      {type}
+      {type === 'DELETE' ? 'DEL' : type}
     </div>
   );
 };
