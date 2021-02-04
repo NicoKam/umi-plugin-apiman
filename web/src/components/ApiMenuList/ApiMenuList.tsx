@@ -1,4 +1,4 @@
-import type { MethodType } from '@/def';
+import type { MethodType } from '@/utils/ApiJson';
 import React from 'react';
 import Method from '../Method';
 import ReactButton from '../ReactButton';

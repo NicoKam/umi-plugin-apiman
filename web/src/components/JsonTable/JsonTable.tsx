@@ -1,25 +1,78 @@
-import type { ParamSchema } from '@/def';
-import { changeArr } from '@/utils';
+import { toggleArr } from '@/utils';
+import type { ParamSchema, ParamVariableType } from '@/utils/ApiJson';
+import { useControllableProps } from '@ali-whale/hooks';
+import { CaretRightOutlined } from '@ant-design/icons';
+import cn from 'classnames';
 import React, { useMemo } from 'react';
 import type { StickyTableColumn, StickyTableProps } from '../StickyTable';
 import StickyTable from '../StickyTable';
+import VarType from '../VarType';
 import styles from './JsonTable.less';
 
-type TreeData<S extends string> = Record<string, unknown> &
-  {
-    [P in S]: TreeData<S>[];
-  };
+// type TreeData<S extends string> = Record<string, unknown> &
+//   {
+//     [P in S]: TreeData<S>[];
+//   };
 
-function flattenTree<S extends string, T extends TreeData<S> = TreeData<S>>(
-  tree: T[],
-  callback: (item: T) => T[] | undefined,
-): T[] {
-  const res: T[] = [];
-  tree.forEach((item) => {
-    res.push(item);
-    const children = callback(item);
-    if (children) {
-      res.push(...children);
+// function flattenTree<S extends string, T extends TreeData<S> = TreeData<S>>(
+//   tree: T[],
+//   callback: (item: T) => T[] | undefined,
+// ): T[] {
+//   const res: T[] = [];
+//   tree.forEach((item) => {
+//     res.push(item);
+//     const children = callback(item);
+//     if (children) {
+//       res.push(...children);
+//     }
+//   });
+//   return res;
+// }
+
+type JsonType = {
+  key: string;
+  name: string;
+  type: ParamVariableType;
+  description?: string;
+  required?: boolean;
+  array?: boolean;
+  expanded?: boolean;
+  level?: number;
+};
+
+/**
+ * 递归将 dataSource 拍平
+ * @param data dataSource
+ * @param expandedKeys 展开的key
+ * @param level 递归层级
+ * @param parentKey 前缀
+ */
+function flattenDataSource(
+  data: Record<string, ParamSchema>,
+  expandedKeys: Record<string, boolean>,
+  level: number = 0,
+  parentKey: string = '@',
+) {
+  const res: JsonType[] = [];
+  Object.entries(data).forEach(([paramName, item]) => {
+    const key = `${parentKey}.${paramName}`;
+    const expanded = expandedKeys[key];
+    const paramInfo = {
+      key,
+      name: paramName,
+      type: item.type,
+      required: item.required,
+      description: item.description,
+      array: item.array,
+      expanded,
+      level,
+    };
+    res.push(paramInfo);
+    if ('properties' in item && expanded) {
+      const subResult = flattenDataSource(item.properties, expandedKeys, level + 1, key);
+      if (Array.isArray(subResult)) {
+        res.push(...subResult);
+      }
     }
   });
   return res;
@@ -27,69 +80,98 @@ function flattenTree<S extends string, T extends TreeData<S> = TreeData<S>>(
 
 export interface JsonTableTableProps extends Omit<StickyTableProps, 'dataSource'> {
   editable?: boolean;
-  dataSource?: ParamSchema;
+  dataSource?: Record<string, ParamSchema>;
+  defaultExpandedKeys?: string[];
   expandedKeys?: string[];
+  indentWidth?: number;
   onDataSourceChange?: (dataSource: ParamSchema) => void;
 }
+
+const eArr = [];
 
 /**
  * 专门用于编辑 headers 的表格组件
  */
-const JsonTable = (props: JsonTableTableProps) => {
-  const {
-    className = '',
-    dataSource: _dataSource = [],
-    onDataSourceChange = () => {},
-    editable = false,
-    ...otherProps
-  } = props;
+const JsonTable = ({ defaultExpandedKeys = eArr, ...props }: JsonTableTableProps) => {
+  const [
+    {
+      className = '',
+      dataSource: _dataSource = {},
+      // onDataSourceChange = () => {},
+      expandedKeys,
+      editable = false,
+      indentWidth = 22,
+      ...otherProps
+    },
+    changeProps,
+  ] = useControllableProps(props, {
+    expandedKeys: defaultExpandedKeys,
+  });
 
   // TODO
   const dataSource = useMemo(
     () =>
-      _dataSource
-        .filter(({ key, value }) => key || value)
-        .concat(editable ? [{ key: '', value: '' }] : []),
-    [_dataSource, editable],
+      flattenDataSource(
+        _dataSource,
+        expandedKeys.reduce(
+          (state, nextKey) => ({
+            ...state,
+            [nextKey]: true,
+          }),
+          {},
+        ),
+      ),
+    [_dataSource, expandedKeys],
   );
 
-  const handleDataSourceChange = (dataSource) => {
-    onDataSourceChange(dataSource.filter(({ key, value }) => key || value));
-  };
+  // const handleDataSourceChange = (dataSource) => {
+  // onDataSourceChange(dataSource.filter(({ key, value }) => key || value));
+  // };
 
   const columns: StickyTableColumn[] = [
     {
-      dataIndex: 'key',
-      title: 'key',
+      dataIndex: 'name',
+      title: '字段名',
       width: '10%',
-      render: (value, row, index) => (
-        <input
-          className={styles.input}
-          disabled={!editable}
-          value={String(value)}
-          onChange={(e) => {
-            handleDataSourceChange(
-              changeArr(dataSource, index, { ...dataSource[index], key: e.target.value }),
-            );
-          }}
-        />
-      ),
+      render: (value, row, index) => {
+        const { type, expanded, level = 0, key } = row as JsonType;
+        const isObj = type === 'object';
+        return (
+          <div className={cn(styles.cell, { [styles.required]: row.required })}>
+            <div className={styles.indent} style={{ width: level * indentWidth }} />
+            <div
+              className={cn(styles.indent, { [styles.arrow]: isObj, [styles.rotate]: expanded })}
+              onClick={() => {
+                changeProps({ expandedKeys: toggleArr(expandedKeys, key) });
+              }}
+              style={{ width: indentWidth }}
+            >
+              {isObj ? <CaretRightOutlined /> : <div className={styles.point} />}
+            </div>
+            <input className={styles.input} disabled={!editable} value={String(value)} />
+          </div>
+        );
+      },
     },
     {
       dataIndex: 'type',
-      title: 'type',
-      width: '10%',
-      render: (value, row, index) => (
-        <input
-          className={styles.input}
-          disabled={!editable}
-          value={String(value)}
-          onChange={(e) => {
-            handleDataSourceChange(
-              changeArr(dataSource, index, { ...dataSource[index], value: e.target.value }),
-            );
-          }}
-        />
+      title: '类型',
+      width: '5%',
+      render: (value, row, index) => {
+        const { array } = row as JsonType;
+        return editable ? (
+          <input className={styles.input} disabled={!editable} value={String(value)} />
+        ) : (
+          <VarType type={value as ParamVariableType}>{value + (array ? '[]' : '')}</VarType>
+        );
+      },
+    },
+    {
+      dataIndex: 'description',
+      title: '描述',
+      width: '40%',
+      render: (value = '', row, index) => (
+        <input className={styles.input} disabled={!editable} value={String(value)} />
       ),
     },
   ];

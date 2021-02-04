@@ -1,5 +1,7 @@
+import ApiView from '@/components/ApiView';
 import HeadersTable from '@/components/HeadersTable';
 import { useStoreState } from '@/store';
+import { apiToArr } from '@/utils/ApiJson';
 import React, { useState } from 'react';
 import styles from './OverviewPage.less';
 
@@ -13,6 +15,7 @@ const OverviewPage = () => {
   const [{ api }] = useStoreState('api');
   return (
     <div className={`${styles.root}`}>
+      {api.api && apiToArr(api.api).map((apiInfo, index) => <ApiView key={index} {...apiInfo} />)}
       <HeadersTable dataSource={data} onDataSourceChange={setData} />
       <pre>{JSON.stringify(api, null, 2)}</pre>
     </div>

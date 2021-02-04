@@ -6,9 +6,47 @@
   width: 100%;
   border: none;
   padding: 0 5px;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
 
-  &:disabled{
-    background-color: #FFFFFF;
+  &:disabled {
+    background-color: #ffffff;
   }
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+}
+
+.required {
+  .input {
+    font-weight: bold;
+  }
+}
+
+.indent {
+  display: flex;
+  justify-content: center;
+}
+
+.arrow {
+  cursor: pointer;
+  :global(.anticon) {
+    transform-origin: center;
+    transition: transform 300ms;
+  }
+}
+
+.rotate {
+  :global(.anticon) {
+    transform: rotate(90deg);
+  }
+}
+
+.point {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: #999999;
 }

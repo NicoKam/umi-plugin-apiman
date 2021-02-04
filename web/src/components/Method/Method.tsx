@@ -1,6 +1,6 @@
 import React from 'react';
 import cn from 'classnames';
-import type { MethodType } from '@/def';
+import type { MethodType } from '@/utils/ApiJson';
 import styles from './Method.less';
 
 export interface MethodProps extends React.HTMLAttributes<HTMLDivElement> {

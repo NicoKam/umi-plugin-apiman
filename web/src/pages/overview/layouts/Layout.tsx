@@ -1,9 +1,9 @@
 import type { ApiMenuListProps } from '@/components/ApiMenuList';
 import ApiMenuList from '@/components/ApiMenuList';
 import ReactButton from '@/components/ReactButton';
-import type { MethodType } from '@/def';
 import { getApiJson } from '@/services/public';
 import { useStoreState } from '@/store';
+import { apiToArr } from '@/utils/ApiJson';
 import { SettingOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import React, { useEffect, useMemo } from 'react';
 import { useRequest } from 'umi';
@@ -26,13 +26,7 @@ const Layout = (props) => {
   const menuList = useMemo<ApiMenuListProps['data']>(() => {
     if (data) {
       const { api } = data;
-      return Object.keys(api).map((apiKey) => {
-        const [method, apiPath] = apiKey.split('|');
-        return {
-          api: apiPath,
-          method: method as MethodType,
-        };
-      });
+      return apiToArr(api).map(({ method, apiPath }) => ({ method, api: apiPath }));
     }
     return [];
   }, [data]);

@@ -1,5 +1,6 @@
-import type { ApiProps, MethodType } from '@/def';
+import type { ApiProps, MethodType } from '@/utils/ApiJson';
 import React from 'react';
+import Method from '../Method';
 import styles from './ApiView.less';
 
 export interface ApiViewProps extends React.HTMLAttributes<HTMLDivElement>, ApiProps {
@@ -25,16 +26,14 @@ const ApiView = (props: ApiViewProps) => {
   return (
     <div className={`${styles.root} ${className}`} {...otherProps}>
       <div className={styles.header}>
-        <div className={styles.method}>{method}</div>
+        <div className={styles.method}>
+          <Method type={method} size="large" />
+        </div>
         <div className={styles.api}>{apiPath}</div>
         <div className={styles.description}>{description}</div>
       </div>
-      <div className={styles.request}>
-        
-      </div>
-      <div className={styles.response}>
-
-      </div>
+      <div className={styles.request} />
+      <div className={styles.response} />
     </div>
   );
 };
