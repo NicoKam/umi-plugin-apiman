@@ -1,5 +1,5 @@
-import type { ApiProps, MethodType } from '@/utils/ApiJson';
-import React from 'react';
+import type { ApiProps, MethodType, ParamSchema } from '@/utils/ApiJson';
+import React, { useMemo } from 'react';
 import cn from 'classnames';
 import Method from '../Method';
 import styles from './ApiView.less';
@@ -25,6 +25,12 @@ const ApiView = (props: ApiViewProps) => {
     errorHandler,
     ...otherProps
   } = props;
+
+  const responseJsonData = useMemo(
+    () => (response ? { response } : ({} as Record<string, ParamSchema>)),
+    [response],
+  );
+
   return (
     <div
       className={cn(`${styles.root} ${className}`, {
@@ -45,7 +51,9 @@ const ApiView = (props: ApiViewProps) => {
       <div className={styles.request}>
         <JsonTable dataSource={params} />
       </div>
-      <div className={styles.response} />
+      <div className={styles.response}>
+        <JsonTable dataSource={responseJsonData} />
+      </div>
     </div>
   );
 };

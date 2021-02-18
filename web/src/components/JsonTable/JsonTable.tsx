@@ -4,30 +4,11 @@ import { useControllableProps } from '@ali-whale/hooks';
 import { CaretRightOutlined } from '@ant-design/icons';
 import cn from 'classnames';
 import React, { useMemo } from 'react';
+import EditableTextInput from '../EditableTextInput';
 import type { StickyTableColumn, StickyTableProps } from '../StickyTable';
 import StickyTable from '../StickyTable';
 import VarType from '../VarType';
 import styles from './JsonTable.less';
-
-// type TreeData<S extends string> = Record<string, unknown> &
-//   {
-//     [P in S]: TreeData<S>[];
-//   };
-
-// function flattenTree<S extends string, T extends TreeData<S> = TreeData<S>>(
-//   tree: T[],
-//   callback: (item: T) => T[] | undefined,
-// ): T[] {
-//   const res: T[] = [];
-//   tree.forEach((item) => {
-//     res.push(item);
-//     const children = callback(item);
-//     if (children) {
-//       res.push(...children);
-//     }
-//   });
-//   return res;
-// }
 
 type JsonType = {
   key: string;
@@ -132,12 +113,12 @@ const JsonTable = ({ defaultExpandedKeys = eArr, ...props }: JsonTableTableProps
     {
       dataIndex: 'name',
       title: '字段名',
-      width: '10%',
+      style: { width: '200px' },
       render: (value, row, index) => {
         const { type, expanded, level = 0, key } = row as JsonType;
         const isObj = type === 'object';
         return (
-          <div className={cn(styles.cell, { [styles.required]: row.required })}>
+          <div className={cn(styles.cell, styles.keyColumn, { [styles.required]: row.required })}>
             <div className={styles.indent} style={{ width: level * indentWidth }} />
             <div
               className={cn(styles.indent, { [styles.arrow]: isObj, [styles.rotate]: expanded })}
@@ -148,7 +129,8 @@ const JsonTable = ({ defaultExpandedKeys = eArr, ...props }: JsonTableTableProps
             >
               {isObj ? <CaretRightOutlined /> : <div className={styles.point} />}
             </div>
-            <input className={styles.input} disabled={!editable} value={String(value)} />
+
+            <EditableTextInput className={styles.input} editable={editable} value={String(value)} />
           </div>
         );
       },
@@ -156,22 +138,28 @@ const JsonTable = ({ defaultExpandedKeys = eArr, ...props }: JsonTableTableProps
     {
       dataIndex: 'type',
       title: '类型',
-      width: '5%',
+      style: { width: '0px' },
       render: (value, row, index) => {
         const { array } = row as JsonType;
         return editable ? (
-          <input className={styles.input} disabled={!editable} value={String(value)} />
+          <input
+            className={`${styles.input} ${styles.typeColumn}`}
+            disabled={!editable}
+            value={String(value)}
+          />
         ) : (
-          <VarType type={value as ParamVariableType}>{value + (array ? '[]' : '')}</VarType>
+          <VarType className={styles.typeColumn} type={value as ParamVariableType}>
+            {value + (array ? '[]' : '')}
+          </VarType>
         );
       },
     },
     {
       dataIndex: 'description',
       title: '描述',
-      width: '40%',
+      style: { width: '100%' },
       render: (value = '', row, index) => (
-        <input className={styles.input} disabled={!editable} value={String(value)} />
+        <EditableTextInput className={styles.input} editable={editable} value={String(value)} />
       ),
     },
   ];

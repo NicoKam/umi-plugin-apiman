@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import React from 'react';
 import styles from './StickyTable.less';
 
@@ -5,7 +6,7 @@ export type StickyTableColumn = {
   key?: string;
   dataIndex: string;
   title?: string;
-  width?: React.ReactText;
+  style?: CSSProperties;
   render?: (
     text: unknown,
     row: Record<string | number, unknown>,
@@ -25,8 +26,8 @@ const StickyTable = (props: StickyTableProps) => {
     <table className={`${styles.root} ${className}`} {...otherProps}>
       <thead>
         <tr>
-          {columns.map(({ key, dataIndex, title, width }) => (
-            <th scope="col" key={key || dataIndex} style={{ width }}>
+          {columns.map(({ key, dataIndex, title, style }) => (
+            <th scope="col" key={key || dataIndex} style={style}>
               {title}
             </th>
           ))}

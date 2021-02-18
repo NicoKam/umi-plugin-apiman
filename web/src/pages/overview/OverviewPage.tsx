@@ -15,8 +15,11 @@ const OverviewPage = () => {
   const [{ api }] = useStoreState('api');
   return (
     <div className={`${styles.root}`}>
-      {api.api && apiToArr(api.api).map((apiInfo, index) => <ApiView key={index} {...apiInfo} />)}
-      <HeadersTable dataSource={data} onDataSourceChange={setData} />
+      {api.api &&
+        apiToArr(api.api).map((apiInfo, index) => (
+          <ApiView key={index} className={styles.apiView} {...apiInfo} />
+        ))}
+      <HeadersTable editable dataSource={data} onDataSourceChange={setData} />
       <pre>{JSON.stringify(api, null, 2)}</pre>
     </div>
   );

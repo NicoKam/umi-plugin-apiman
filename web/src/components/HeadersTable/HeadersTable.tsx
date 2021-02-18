@@ -1,5 +1,6 @@
 import { changeArr } from '@/utils';
 import React, { useMemo } from 'react';
+import EditableTextInput from '../EditableTextInput';
 import type { StickyTableColumn, StickyTableProps } from '../StickyTable';
 import StickyTable from '../StickyTable';
 import styles from './HeadersTable.less';
@@ -38,11 +39,11 @@ const HeadersTable = (props: HeadersTableProps) => {
     {
       dataIndex: 'key',
       title: 'key',
-      width: '5%',
+      style: { width: '5%' },
       render: (value, row, index) => (
-        <input
+        <EditableTextInput
           className={styles.input}
-          disabled={!editable}
+          editable={editable}
           value={String(value)}
           onChange={(e) => {
             handleDataSourceChange(
@@ -55,11 +56,11 @@ const HeadersTable = (props: HeadersTableProps) => {
     {
       dataIndex: 'value',
       title: 'value',
-      width: '15%',
+      style: { width: '15%' },
       render: (value, row, index) => (
-        <input
+        <EditableTextInput
           className={styles.input}
-          disabled={!editable}
+          editable={editable}
           value={String(value)}
           onChange={(e) => {
             handleDataSourceChange(
