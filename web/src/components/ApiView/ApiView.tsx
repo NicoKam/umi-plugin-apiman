@@ -1,10 +1,13 @@
 import type { ApiProps, MethodType, ParamSchema } from '@/utils/ApiJson';
 import React, { useMemo } from 'react';
+import { Tabs } from 'antd';
 import cn from 'classnames';
 import Method from '../Method';
 import styles from './ApiView.less';
 import JsonTable from '../JsonTable';
+import Carousel from '../Carousel';
 
+const { TabPane } = Tabs;
 export interface ApiViewProps extends React.HTMLAttributes<HTMLDivElement>, ApiProps {
   method?: MethodType;
   apiPath: string;
@@ -49,7 +52,17 @@ const ApiView = (props: ApiViewProps) => {
         <div className={styles.description}>{description}</div>
       </div>
       <div className={styles.request}>
-        <JsonTable dataSource={params} />
+        <Carousel handlerPosition="top" style={{ height: 200 }}>
+          <Carousel.Item key="headers" title="headers">
+            <JsonTable dataSource={params} />
+          </Carousel.Item>
+          <Carousel.Item key="params" title="params">
+            <JsonTable dataSource={params} />
+          </Carousel.Item>
+          <Carousel.Item key="body" title="body">
+            <JsonTable dataSource={params} />
+          </Carousel.Item>
+        </Carousel>
       </div>
       <div className={styles.response}>
         <JsonTable dataSource={responseJsonData} />
