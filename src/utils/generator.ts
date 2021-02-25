@@ -3,6 +3,7 @@ import ejs from 'ejs';
 import fs from 'fs';
 import { resolve } from 'path';
 import prettier from 'prettier';
+import slash from 'slash2';
 import { ApiJson, ParamSchema, ResponseType } from './ApiJson';
 import { readApiJson, readFileStr } from './utils';
 
@@ -20,7 +21,7 @@ function generateParam(param: ParamSchema, level: number = 0) {
   const spacePrefix = indent.repeat(level);
   if (param.description) {
     // add description
-    const descArr = param.description.split('\n');
+    const descArr = param.description.split('/n'), ;
     if (descArr.length > 1) {
       comment.push(`${spacePrefix}/**`);
       descArr.forEach((d) => {
@@ -149,7 +150,7 @@ export async function generate(apiJsonPath:string, targetPath:string) {
     prettier.format(
       compiler({
         content: servicesContent.join('\n'),
-        fetchPath: resolve(__dirname, '../fetch/fetch'),
+        fetchPath: slash(resolve(__dirname, '../fetch/fetch')),
       }),
       {
         printWidth: 120,
@@ -163,3 +164,6 @@ export async function generate(apiJsonPath:string, targetPath:string) {
     ),
   );
 }
+
+
+generate('D:/project/plugins/umi-plugin-apiman/src/api.json', 'D:/project/plugins/umi-plugin-apiman/src/api.ts');

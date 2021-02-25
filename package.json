@@ -22,7 +22,8 @@
     "@types/isomorphic-fetch": "0.0.35",
     "change-case": "^4.1.2",
     "ejs": "^3.1.5",
-    "isomorphic-fetch": "^3.0.0"
+    "isomorphic-fetch": "^3.0.0",
+    "slash2": "^2.0.0"
   },
   "devDependencies": {
     "@ali-whale/eslint-config": "^0.8.26",

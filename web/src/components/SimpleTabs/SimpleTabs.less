@@ -64,31 +64,32 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
   transform: translate3d(0, 0, 0);
   transition: transform 300ms;
 }
 
 .handler {
   display: flex;
-  justify-content: center;
+  // justify-content: center;
   align-items: center;
-  padding: 5px;
 }
 
 .handlerItem {
   font-size: 12px;
   white-space: nowrap;
-  border-radius: 20px;
-  padding: 0px 6px;
-  border: 1px solid #1199ff;
-  color: #1199ff;
-  transition: color 300ms, background-color 300ms;
-  margin-bottom: 4px;
+  padding: 4px 6px;
+  border-bottom: 2px solid #CCCCCC;
+  color: #666666;
+  transition: color 300ms, border-color 300ms;
   cursor: pointer;
+  margin-right: 10px;
+
+  &:hover{
+    color: #1199ff;
+  }
 
   &.current {
-    background-color: #1199ff;
-    color: #FFFFFF;
+    color: #1199ff;
+    border-color: #1199ff;
   }
 }

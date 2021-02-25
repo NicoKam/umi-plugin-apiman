@@ -11,4 +11,9 @@ export default class Model2 extends BaseModel<Stores> {
     const { value1, type } = this.getState('model1');
     console.warn(value1, type);
   };
+
+  myEffect = async (arg: string) => {
+    const model2Effects = this.getEffects('model2');
+    model2Effects.testEffect('hahaha');
+  };
 }

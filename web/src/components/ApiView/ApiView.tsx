@@ -1,13 +1,11 @@
 import type { ApiProps, MethodType, ParamSchema } from '@/utils/ApiJson';
-import React, { useMemo } from 'react';
-import { Tabs } from 'antd';
 import cn from 'classnames';
+import React, { useMemo } from 'react';
+import SimpleTabs from '../SimpleTabs';
+import JsonTable from '../JsonTable';
 import Method from '../Method';
 import styles from './ApiView.less';
-import JsonTable from '../JsonTable';
-import Carousel from '../Carousel';
 
-const { TabPane } = Tabs;
 export interface ApiViewProps extends React.HTMLAttributes<HTMLDivElement>, ApiProps {
   method?: MethodType;
   apiPath: string;
@@ -52,20 +50,20 @@ const ApiView = (props: ApiViewProps) => {
         <div className={styles.description}>{description}</div>
       </div>
       <div className={styles.request}>
-        <Carousel handlerPosition="top" style={{ height: 200 }}>
-          <Carousel.Item key="headers" title="headers">
+        <SimpleTabs handlerPosition="top">
+          <SimpleTabs.Item key="headers" title="Headers">
             <JsonTable dataSource={params} />
-          </Carousel.Item>
-          <Carousel.Item key="params" title="params">
+          </SimpleTabs.Item>
+          <SimpleTabs.Item key="params" title="Query Params">
             <JsonTable dataSource={params} />
-          </Carousel.Item>
-          <Carousel.Item key="body" title="body">
+          </SimpleTabs.Item>
+          <SimpleTabs.Item key="body" title="Request Body">
             <JsonTable dataSource={params} />
-          </Carousel.Item>
-        </Carousel>
-      </div>
-      <div className={styles.response}>
-        <JsonTable dataSource={responseJsonData} />
+          </SimpleTabs.Item>
+          <SimpleTabs.Item key="response" title="Response Body">
+            <JsonTable dataSource={responseJsonData} />
+          </SimpleTabs.Item>
+        </SimpleTabs>
       </div>
     </div>
   );

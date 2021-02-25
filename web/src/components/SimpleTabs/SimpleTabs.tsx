@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useControllableProps } from '@ali-whale/hooks';
 import cn from 'classnames';
+import { usePersistFn } from 'ahooks';
+import { changeArr } from '@/utils';
 import Item from './Item';
-import styles from './Carousel.less';
+import styles from './SimpleTabs.less';
 
-export interface CarouselProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface SimpleTabsProps extends React.HTMLAttributes<HTMLDivElement> {
   activeKey?: number | string;
   defaultActiveKey?: number | string;
   handlerPosition?: 'top' | 'left' | 'bottom' | 'right';
@@ -13,7 +15,12 @@ export interface CarouselProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactElement | React.ReactElement[];
 }
 
-const Carousel: React.FC<CarouselProps> & { Item: typeof Item } = ({
+type Size = {
+  width: number;
+  height: number;
+};
+
+const SimpleTabs: React.FC<SimpleTabsProps> & { Item: typeof Item } = ({
   defaultActiveKey,
   ...props
 }) => {
@@ -32,8 +39,16 @@ const Carousel: React.FC<CarouselProps> & { Item: typeof Item } = ({
     {},
   );
 
+  const [itemSize, setItemSize] = useState<Size[]>([]);
+  const handleResize = usePersistFn((size: Size, index: number) => {
+    const arr = changeArr(itemSize, index, size);
+    setItemSize(arr);
+  });
+
   const keyIsNumber = typeof activeKey === 'number';
-  const activeIndex = keyIsNumber ? activeKey : keysMapping[activeKey] ?? 0;
+  const activeIndex: number = keyIsNumber ? activeKey : keysMapping[activeKey] ?? 0;
+
+  const contentSize = itemSize[activeIndex] ?? { width: 'auto', height: 'auto' };
 
   useEffect(() => {
     let timer;
@@ -60,7 +75,7 @@ const Carousel: React.FC<CarouselProps> & { Item: typeof Item } = ({
       })}
       {...otherProps}
     >
-      <div className={styles.content}>
+      <div className={styles.content} style={{ minHeight: contentSize.height }}>
         {React.Children.map(children, (child, index) => {
           if (React.isValidElement(child)) {
             const { className = '' } = child.props || {};
@@ -68,8 +83,11 @@ const Carousel: React.FC<CarouselProps> & { Item: typeof Item } = ({
             if (index < activeIndex) position = 'before';
             if (index > activeIndex) position = 'after';
             return React.cloneElement(child, {
-              className: `${className} ${styles[position]}`,
+              className: `${className} ${styles.item} ${styles[position]}`,
               title: '',
+              onResize: (size) => {
+                handleResize(size, index);
+              },
             });
           }
           return child;
@@ -101,7 +119,7 @@ const Carousel: React.FC<CarouselProps> & { Item: typeof Item } = ({
   );
 };
 
-Carousel.defaultProps = {
+SimpleTabs.defaultProps = {
   className: '',
   defaultActiveKey: 0,
   handlerPosition: 'right',
@@ -109,6 +127,6 @@ Carousel.defaultProps = {
   autoPlayInterval: 5000,
 };
 
-Carousel.Item = Item;
+SimpleTabs.Item = Item;
 
-export default Carousel;
+export default SimpleTabs;
