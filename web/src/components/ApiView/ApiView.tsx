@@ -38,6 +38,11 @@ const ApiView = (props: ApiViewProps) => {
 
   const hasHeader = useMemo(() => headers != null && Object.keys(headers).length > 0, [headers]);
 
+  const headersArray = useMemo(
+    () => Object.entries(headers || {}).map(([key, value]) => ({ key, value })),
+    [headers],
+  );
+
   return (
     <div
       className={cn(`${styles.root} ${className}`, {
@@ -59,7 +64,7 @@ const ApiView = (props: ApiViewProps) => {
         <SimpleTabs handlerPosition="top" defaultActiveKey="params">
           <SimpleTabs.Item key="headers" title="Headers">
             {hasHeader ? (
-              <HeadersTable dataSource={headers} />
+              <HeadersTable dataSource={headersArray} />
             ) : (
               <Empty description="未添加额外的headers" image={Empty.PRESENTED_IMAGE_SIMPLE} />
             )}

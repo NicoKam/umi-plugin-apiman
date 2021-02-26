@@ -3,7 +3,9 @@
     "GET|/user": {
       "serviceName": "getUserList",
       "description": "获取用户列表",
-      "headers": {},
+      "headers": {
+        "content-type": "application/json"
+      },
       "params": {
         "userName": {
           "type": "string",

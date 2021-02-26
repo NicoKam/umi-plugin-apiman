@@ -61,6 +61,7 @@ function flattenDataSource(
 
 export interface JsonTableTableProps extends Omit<StickyTableProps, 'dataSource'> {
   editable?: boolean;
+  defaultExpandedAll?: boolean;
   dataSource?: Record<string, ParamSchema>;
   defaultExpandedKeys?: string[];
   expandedKeys?: string[];
@@ -70,10 +71,14 @@ export interface JsonTableTableProps extends Omit<StickyTableProps, 'dataSource'
 
 const eArr = [];
 
+// function getExpandableKeys (dataSource:Record<string, ParamSchema>):string[]{
+
+// }
+
 /**
  * 专门用于编辑 headers 的表格组件
  */
-const JsonTable = ({ defaultExpandedKeys = eArr, ...props }: JsonTableTableProps) => {
+const JsonTable = ({ defaultExpandedKeys, defaultExpandedAll, ...props }: JsonTableTableProps) => {
   const [
     {
       className = '',
@@ -86,7 +91,7 @@ const JsonTable = ({ defaultExpandedKeys = eArr, ...props }: JsonTableTableProps
     },
     changeProps,
   ] = useControllableProps(props, {
-    expandedKeys: defaultExpandedKeys,
+    expandedKeys: defaultExpandedAll ? [] : (defaultExpandedKeys || eArr),
   });
 
   // TODO
