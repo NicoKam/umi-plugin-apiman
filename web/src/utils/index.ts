@@ -36,6 +36,7 @@ export function treeSearch<T extends Record<string, unknown>>(
 
       const curChildren = item[childrenPropName];
       const hasChild = Array.isArray(curChildren) && curChildren.length > 0;
+      const searched = parentSearched || result !== false;
       if (hasChild) {
         // 递归搜索
         children = treeSearch(
@@ -43,12 +44,12 @@ export function treeSearch<T extends Record<string, unknown>>(
           callback,
           childrenPropName,
           [...path, item],
-          parentSearched || result !== false,
+          searched,
         );
       }
 
       // 在父节点未命中且未命中子节点的情况下，视为当前节点无效
-      if (!parentSearched && children.length === 0) {
+      if (!searched && children.length === 0) {
         return false;
       }
 
@@ -56,63 +57,67 @@ export function treeSearch<T extends Record<string, unknown>>(
         return {
           ...item,
           ...result,
+          [childrenPropName]: children,
         };
       }
 
-      return item;
+      return {
+        ...item,
+        [childrenPropName]: children,
+      };
     })
     .filter(item => item !== false) as T[];
   return res;
 }
 
-type TreeItem = {
-  name: string;
-  children?: TreeItem[];
-};
+// type TreeItem = {
+//   name: string;
+//   children?: TreeItem[];
+// };
 
-const treeData: TreeItem[] = [
-  {
-    name: '1',
-    children: [
-      {
-        name: '1-1',
-        children: [{ name: '1-1-1' }],
-      },
-      {
-        name: '1-2',
-        children: [{ name: '1-2-1' }, { name: '1-2-2' }],
-      },
-    ],
-  },
-  {
-    name: '2',
-    children: [
-      {
-        name: '2-1',
-        children: [{ name: '2-1-1' }, { name: '2-1-2' }],
-      },
-      {
-        name: '2-2',
-        children: [{ name: '2-2-1' }, { name: '2-2-2' }, { name: '2-2-3' }],
-      },
-      {
-        name: '2-3',
-      },
-    ],
-  },
-];
+// const treeData: TreeItem[] = [
+//   {
+//     name: '1',
+//     children: [
+//       {
+//         name: '1-1',
+//         children: [{ name: '1-1-1' }],
+//       },
+//       {
+//         name: '1-2',
+//         children: [{ name: '1-2-1' }, { name: '1-2-2' }],
+//       },
+//     ],
+//   },
+//   {
+//     name: '2',
+//     children: [
+//       {
+//         name: '2-1',
+//         children: [{ name: '2-1-1' }, { name: '2-1-2' }],
+//       },
+//       {
+//         name: '2-2',
+//         children: [{ name: '2-2-1' }, { name: '2-2-2' }, { name: '2-2-3' }],
+//       },
+//       {
+//         name: '2-3',
+//       },
+//     ],
+//   },
+// ];
 
-const res = treeSearch(treeData, (item) => {
-  if (item.name.includes('2')) return true;
-  return false;
-});
+// const res = treeSearch(treeData, (item) => {
+//   if (item.name.includes('3')) return true;
+//   return false;
+// });
 
-function printTree(treeData: TreeItem[] = [], level = 0) {
-  treeData.forEach((item) => {
-    // eslint-disable-next-line no-console
-    console.log(' '.repeat(level * 2) + item.name);
-    printTree(item.children, level + 1);
-  });
-}
+// function printTree(treeData: TreeItem[] = [], level = 0) {
+//   treeData.forEach((item) => {
+//     // eslint-disable-next-line no-console
+//     console.log(' '.repeat(level * 2) + item.name);
+//     printTree(item.children, level + 1);
+//   });
+// }
 
-printTree(res);
+// printTree(res);
