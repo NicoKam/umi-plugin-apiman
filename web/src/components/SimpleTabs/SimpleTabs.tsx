@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useControllableProps } from '@ali-whale/hooks';
-import cn from 'classnames';
+import pc from 'prefix-classnames';
 import { usePersistFn } from 'ahooks';
 import { changeArr } from '@/utils';
 import Item from './Item';
-import styles from './SimpleTabs.less';
+import './SimpleTabs.less';
+
+const px = pc('simple-tabs');
 
 export interface SimpleTabsProps extends React.HTMLAttributes<HTMLDivElement> {
   activeKey?: number | string;
@@ -67,15 +69,15 @@ const SimpleTabs: React.FC<SimpleTabsProps> & { Item: typeof Item } = ({
 
   return (
     <div
-      className={cn(styles.root, className, {
-        [styles.handlerTop]: handlerPosition === 'top',
-        [styles.handlerBottom]: handlerPosition === 'bottom',
-        [styles.handlerLeft]: handlerPosition === 'left',
-        [styles.handlerRight]: handlerPosition === 'right',
-      })}
+      className={`${px('root', {
+        handlerTop: handlerPosition === 'top',
+        handlerBottom: handlerPosition === 'bottom',
+        handlerLeft: handlerPosition === 'left',
+        handlerRight: handlerPosition === 'right',
+      })} ${className}`}
       {...otherProps}
     >
-      <div className={styles.content} style={{ minHeight: contentSize.height }}>
+      <div className={px('content')} style={{ minHeight: contentSize.height }}>
         {React.Children.map(children, (child, index) => {
           if (React.isValidElement(child)) {
             const { className = '' } = child.props || {};
@@ -83,7 +85,7 @@ const SimpleTabs: React.FC<SimpleTabsProps> & { Item: typeof Item } = ({
             if (index < activeIndex) position = 'before';
             if (index > activeIndex) position = 'after';
             return React.cloneElement(child, {
-              className: `${className} ${styles.item} ${styles[position]}`,
+              className: `${className} ${px('item', position)}`,
               title: '',
               onResize: (size) => {
                 handleResize(size, index);
@@ -93,7 +95,7 @@ const SimpleTabs: React.FC<SimpleTabsProps> & { Item: typeof Item } = ({
           return child;
         })}
       </div>
-      <div className={styles.handler}>
+      <div className={px('handler')}>
         {React.Children.map(children, (child, index) => {
           if (React.isValidElement(child)) {
             const isCurrent = activeIndex === index;
@@ -101,8 +103,8 @@ const SimpleTabs: React.FC<SimpleTabsProps> & { Item: typeof Item } = ({
             return (
               <div
                 key={child.key}
-                className={cn(styles.handlerItem, {
-                  [styles.current]: isCurrent,
+                className={px('handlerItem', {
+                  current: isCurrent,
                 })}
                 onClick={() => {
                   changeProps({ activeKey: keyIsNumber ? index : child.key! });

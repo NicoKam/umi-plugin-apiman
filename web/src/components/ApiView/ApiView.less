@@ -4,20 +4,32 @@
   border-radius: 4px;
 }
 
-.get{
-  background-color: #ebf3fb;
-}
-
-.post{
-  background-color: #e8f6f0;
+.get {
+  &,
+  & .header {
+    background-color: #ebf3fb;
   }
-
-.put{
-  background-color: #fbf1e6;
 }
 
-.del{
-  background-color: #fae7e7;
+.post {
+  &,
+  & .header {
+    background-color: #e8f6f0;
+  }
+}
+
+.put {
+  &,
+  & .header {
+    background-color: #fbf1e6;
+  }
+}
+
+.del {
+  &,
+  & .header {
+    background-color: #fae7e7;
+  }
 }
 
 .header {
@@ -25,7 +37,8 @@
   display: flex;
   align-items: center;
   position: sticky;
-  top: 0;
+  top: -10px;
+  z-index: 1;
 
   .api {
     font-family: 'Courier New', Courier, monospace;

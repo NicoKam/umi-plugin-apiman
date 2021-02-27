@@ -7,8 +7,8 @@ import styles from './HeadersTable.less';
 
 export interface HeadersTableProps extends Omit<StickyTableProps, 'dataSource'> {
   editable?: boolean;
-  dataSource?: Record<string, string>;
-  onDataSourceChange?: (dataSource: Record<string, string>) => void;
+  dataSource?: {key: string;value: string}[];
+  onDataSourceChange?: (dataSource: {key: string;value: string}[]) => void;
 }
 
 /**
@@ -25,8 +25,7 @@ const HeadersTable = (props: HeadersTableProps) => {
 
   const dataSource = useMemo(
     () =>
-      Object.entries(_dataSource)
-        .map(([key, value]) => ({ key, value }))
+      _dataSource
         .filter(({ key, value }) => key || value)
         .concat(editable ? [{ key: '', value: '' }] : []),
     [_dataSource, editable],
@@ -40,7 +39,7 @@ const HeadersTable = (props: HeadersTableProps) => {
     {
       dataIndex: 'key',
       title: 'key',
-      style: { width: '25%' },
+      style: { width: '5%' },
       render: (value, row, index) => (
         <EditableTextInput
           className={styles.input}
@@ -57,7 +56,7 @@ const HeadersTable = (props: HeadersTableProps) => {
     {
       dataIndex: 'value',
       title: 'value',
-      style: { width: '75%' },
+      style: { width: '15%' },
       render: (value, row, index) => (
         <EditableTextInput
           className={styles.input}

@@ -18,7 +18,6 @@ export default defineConfig({
         },
       });
   },
-  plugins: ['D:/project/plugins/umi-plugin-dev-ui/lib'],
   proxy: {
     '/api': {
       target: 'http://server-ip:8080/',
